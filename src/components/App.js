@@ -1,6 +1,6 @@
 import TwitRouter from "components/Router";
 import React, { useState } from "react";
-import { authService, suthService } from "fbase";
+import { authService } from "fbase";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
