@@ -4,7 +4,7 @@ import React, { useState } from "react";
 const Auth = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [newAccount, setNewAccount] = useState(true);
+	const [newAccount, setNewAccount] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const onChange = (event) => {
