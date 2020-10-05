@@ -1,4 +1,4 @@
-import { authService } from "fbase";
+import { authService, firebaseInstance } from "fbase";
 import React, { useState } from "react";
 
 const Auth = () => {
@@ -42,11 +42,31 @@ const Auth = () => {
 		}
 	};
 
+	///////////////////////////////HELPER FUNCTIONS////////////////////////////////////
+
 	const toggleForm = () => setNewAccount((prev) => !prev);
+
+	const onSocialClick = async (event) => {
+		const {
+			target: { name },
+		} = event;
+		let provider;
+		if (name === "googleButton") {
+			provider = new firebaseInstance.auth.GoogleAuthProvider();
+		} else if (name === "githubButton") {
+			provider = new firebaseInstance.auth.GithubAuthProvider();
+		}
+
+		await authService.signInWithPopup(provider);
+	};
+
+	/////////////////////////////////////////STYLES///////////////////////////////////
 
 	const disabledFormStyling = { opacity: 0.5 };
 	const enabledFormStyling = { opacity: 1.0 };
 	const errorMsgStyling = { color: "red" };
+
+	/////////////////////////////////////HTML////////////////////////////////////////
 
 	return (
 		<div>
@@ -91,8 +111,12 @@ const Auth = () => {
 			</form>
 			<div style={errorMsgStyling}>{errorMessage}</div>
 			<div>
-				<button>Continue with Google</button>
-				<button>Continue with GitHub</button>
+				<button onClick={onSocialClick} name="googleButton">
+					Continue with Google
+				</button>
+				<button onClick={onSocialClick} name="githubButton">
+					Continue with GitHub
+				</button>
 			</div>
 		</div>
 	);
