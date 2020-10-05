@@ -1,12 +1,27 @@
 import TwitRouter from "components/Router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { authService } from "fbase";
 
 function App() {
-	const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
+	const [init, setInit] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	useEffect(() => {
+		authService.onAuthStateChanged((user) => {
+			if (user) {
+				setIsLoggedIn(true);
+			} else {
+				setIsLoggedIn(false);
+			}
+			setInit(true);
+		});
+	}, []);
 	return (
 		<>
-			<TwitRouter isLoggedIn={isLoggedIn} />
+			{init ? (
+				<TwitRouter isLoggedIn={isLoggedIn} />
+			) : (
+				<span>Loading...</span>
+			)}
 			<footer>NotTwitter {new Date().getFullYear()}</footer>
 		</>
 	);

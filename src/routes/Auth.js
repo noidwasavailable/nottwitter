@@ -5,6 +5,7 @@ const Auth = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [newAccount, setNewAccount] = useState(true);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const onChange = (event) => {
 		const {
@@ -37,12 +38,35 @@ const Auth = () => {
 			}
 			console.log(data);
 		} catch (error) {
-			console.log(error);
+			setErrorMessage(error.message);
 		}
 	};
+
+	const toggleForm = () => setNewAccount((prev) => !prev);
+
+	const disabledFormStyling = { opacity: 0.5 };
+	const enabledFormStyling = { opacity: 1.0 };
+	const errorMsgStyling = { color: "red" };
+
 	return (
 		<div>
-			<div>Authorization</div>
+			<div onClick={toggleForm}>
+				<span
+					style={
+						newAccount ? disabledFormStyling : enabledFormStyling
+					}
+				>
+					Sign in
+				</span>{" "}
+				<span>|</span>{" "}
+				<span
+					style={
+						newAccount ? enabledFormStyling : disabledFormStyling
+					}
+				>
+					Create Account
+				</span>
+			</div>
 			<form onSubmit={onSubmit}>
 				<input
 					name="email"
@@ -65,6 +89,7 @@ const Auth = () => {
 					value={newAccount ? "Create Account" : "Sign In"}
 				/>
 			</form>
+			<div style={errorMsgStyling}>{errorMessage}</div>
 			<div>
 				<button>Continue with Google</button>
 				<button>Continue with GitHub</button>
