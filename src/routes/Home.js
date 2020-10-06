@@ -1,3 +1,4 @@
+import Tweet from "components/Tweet";
 import { dbService } from "fbase";
 import React, { useEffect, useState } from "react";
 
@@ -51,10 +52,7 @@ const Home = ({ userObj }) => {
 			</form>
 			<div>
 				{tweets.map((tweet) => (
-					<div key={tweet.id}>
-						<h3>{tweet.tweet}</h3>
-						<div>{tweet.author}</div>
-					</div>
+					<Tweet key={tweet.id} tweet={tweet} />
 				))}
 			</div>
 		</div>
