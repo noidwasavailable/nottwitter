@@ -1,22 +1,18 @@
-import { authService, dbService } from "fbase";
+import { dbService } from "fbase";
 import React, { useEffect, useState } from "react";
 
-const Home = () => {
+const Home = ({ userObj }) => {
 	const [newTweet, setNewTweet] = useState("");
 	const [tweets, setTweets] = useState([]);
 
-	const getTweets = async () => {
-		(await dbService.collection("tweets").get()).forEach((document) => {
-			const tweetObj = {
-				...document.data(),
-				id: document.id,
-			};
-			setTweets((prev) => [tweetObj, ...prev]);
-		});
-	};
-
 	useEffect(() => {
-		getTweets();
+		dbService.collection("tweets").onSnapshot((snapshot) => {
+			const tweetArray = snapshot.docs.map((doc) => ({
+				id: doc.id,
+				...doc.data(),
+			}));
+			setTweets(tweetArray);
+		});
 	}, []);
 
 	const onSubmit = async (event) => {
@@ -24,7 +20,7 @@ const Home = () => {
 		await dbService.collection("tweets").add({
 			tweet: newTweet,
 			createdAt: Date.now(),
-			author: authService.currentUser.uid,
+			author: userObj.uid,
 		});
 
 		setNewTweet("");
