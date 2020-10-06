@@ -11,7 +11,9 @@ const Home = ({ userObj }) => {
 				id: doc.id,
 				...doc.data(),
 			}));
-			setTweets(tweetArray);
+			setTweets(
+				tweetArray.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+			);
 		});
 	}, []);
 
