@@ -13,7 +13,7 @@ const Home = ({ userObj }) => {
 				...doc.data(),
 			}));
 			setTweets(
-				tweetArray.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+				tweetArray.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
 			);
 		});
 	}, []);
@@ -52,7 +52,11 @@ const Home = ({ userObj }) => {
 			</form>
 			<div>
 				{tweets.map((tweet) => (
-					<Tweet key={tweet.id} tweet={tweet} />
+					<Tweet
+						key={tweet.id}
+						tweet={tweet}
+						isOwner={tweet.author === userObj.uid}
+					/>
 				))}
 			</div>
 		</div>
