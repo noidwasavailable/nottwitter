@@ -1,10 +1,18 @@
+import { authService, dbService } from "fbase";
 import React, { useState } from "react";
 
 const Home = () => {
 	const [tweet, setTweet] = useState("");
 
-	const onSubmit = (event) => {
+	const onSubmit = async (event) => {
 		event.preventDefault();
+		await dbService.collection("tweets").add({
+			tweet: tweet,
+			createdAt: Date.now(),
+			author: authService.currentUser.uid,
+		});
+
+		setTweet("");
 	};
 
 	const onChange = (event) => {
