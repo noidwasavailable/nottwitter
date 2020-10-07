@@ -7,24 +7,26 @@ import React, { useEffect, useState } from "react";
 const Home = ({ userObj }) => {
 	const [newTweet, setNewTweet] = useState("");
 	const [tweets, setTweets] = useState([]);
-	const [attachment, setAttachment] = useState(null);
+	const [attachment, setAttachment] = useState("");
 
 	useEffect(() => {
-		dbService.collection("tweets").onSnapshot((snapshot) => {
-			const tweetArray = snapshot.docs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
-			setTweets(
-				tweetArray.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
-			);
-		});
+		dbService
+			.collection("tweets")
+			.orderBy("createdAt", "desc")
+			.onSnapshot((snapshot) => {
+				setTweets(
+					snapshot.docs.map((doc) => ({
+						id: doc.id,
+						...doc.data(),
+					}))
+				);
+			});
 	}, []);
 
 	const onSubmit = async (event) => {
 		event.preventDefault();
 
-		let attachmentURL = null;
+		let attachmentURL = "";
 
 		if (attachment) {
 			const attachmentRef = storageService
@@ -46,7 +48,7 @@ const Home = ({ userObj }) => {
 
 		await dbService.collection("tweets").add(tweet);
 		setNewTweet("");
-		setAttachment(null);
+		setAttachment("");
 	};
 
 	const onChange = (event) => {
