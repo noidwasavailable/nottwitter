@@ -24,21 +24,29 @@ const Home = ({ userObj }) => {
 	const onSubmit = async (event) => {
 		event.preventDefault();
 
-		const fileRef = storageService
-			.ref()
-			.child(`${userObj.uid}/${uuidv4()}`);
+		let attachmentURL = null;
+
 		if (attachment) {
-			const result = await fileRef.putString(attachment, "data_url");
-			console.log(result);
+			const attachmentRef = storageService
+				.ref()
+				.child(`${userObj.uid}/${uuidv4()}`);
+
+			const result = await attachmentRef.putString(
+				attachment,
+				"data_url"
+			);
+			attachmentURL = await result.ref.getDownloadURL();
 		}
+		const tweet = {
+			tweet: newTweet,
+			createdAt: Date.now(),
+			author: userObj.uid,
+			attachmentURL,
+		};
 
-		// await dbService.collection("tweets").add({
-		// 	tweet: newTweet,
-		// 	createdAt: Date.now(),
-		// 	author: userObj.uid,
-		// });
-
+		await dbService.collection("tweets").add(tweet);
 		setNewTweet("");
+		setAttachment(null);
 	};
 
 	const onChange = (event) => {
@@ -92,7 +100,6 @@ const Home = ({ userObj }) => {
 							src={attachment}
 							width="100px"
 							height="100px"
-							object-fit="cover"
 							alt="Attachment Selected"
 						/>
 						<button onClick={onClearAttachment}>Clear</button>
