@@ -1,9 +1,28 @@
 import { dbService, storageService } from "fbase";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const Tweet = ({ tweet, isOwner }) => {
+const Tweet = ({ tweet, authorObj, isOwner }) => {
 	const [editing, setEditing] = useState(false);
 	const [newTweet, setNewTweet] = useState(tweet.tweet);
+	// const [authorObj, setAuthorObj] = useState(null);
+
+	// const getUserFromUID = async (givenUID) => {
+	// 	let userFromUID;
+
+	// 	await dbService
+	// 		.collection("users")
+	// 		.where("uid", "==", givenUID)
+	// 		.onSnapshot((snapshot) => {
+	// 			userFromUID = snapshot.docs[0].data();
+	// 			setAuthorObj(userFromUID);
+	// 		});
+	// };
+
+	// useEffect(() => {
+	// 	getUserFromUID(tweet.author);
+	// 	console.log(authorObj);
+	// 	return;
+	// }, [tweet]);
 
 	// Deleting Tweet
 	const onDeleteClick = async () => {

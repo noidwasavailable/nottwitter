@@ -32,6 +32,7 @@ const Profile = ({ userObj }) => {
 	return (
 		<>
 			<div>Profile</div>
+			<h3>{userObj.displayName}</h3>
 			<button onClick={onSignoutClick}>Sign Out</button>
 
 			<Link to={`/editprofile`}>Edit Profile</Link>
