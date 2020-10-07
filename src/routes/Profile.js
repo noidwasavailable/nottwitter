@@ -6,10 +6,12 @@ import { Link } from "react-router-dom";
 const Profile = ({ userObj }) => {
 	const [tweets, setTweets] = useState([]);
 
+	//sign out
 	const onSignoutClick = () => {
 		authService.signOut();
 	};
 
+	//get my tweets
 	useEffect(() => {
 		dbService
 			.collection("tweets")

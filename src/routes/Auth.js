@@ -7,6 +7,7 @@ const Auth = () => {
 	const [newAccount, setNewAccount] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
+	//on updating the email or password by typing in
 	const onChange = (event) => {
 		const {
 			target: { name, value },
@@ -19,6 +20,7 @@ const Auth = () => {
 		}
 	};
 
+	//sign in or create a new account depending on the current mode
 	const onSubmit = async (event) => {
 		event.preventDefault();
 		try {
@@ -44,8 +46,10 @@ const Auth = () => {
 
 	///////////////////////////////HELPER FUNCTIONS////////////////////////////////////
 
+	//toggle between create new account or sign into existing account
 	const toggleForm = () => setNewAccount((prev) => !prev);
 
+	//log in using socials (google and github)
 	const onSocialClick = async (event) => {
 		const {
 			target: { name },

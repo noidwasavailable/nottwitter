@@ -6,6 +6,7 @@ function App() {
 	const [init, setInit] = useState(false);
 	const [userObj, setUserObj] = useState(null);
 
+	//wait for Authorization status to change and set user object accordingly whether the user is logged in or not.
 	useEffect(() => {
 		authService.onAuthStateChanged((user) => {
 			if (user) {
@@ -24,7 +25,7 @@ function App() {
 			) : (
 				<span>Loading...</span>
 			)}
-			{/* <footer>NotTwitter {new Date().getFullYear()}</footer> */}
+			<footer>NotTwitter {new Date().getFullYear()}</footer>
 		</>
 	);
 }

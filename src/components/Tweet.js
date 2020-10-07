@@ -5,6 +5,7 @@ const Tweet = ({ tweet, isOwner }) => {
 	const [editing, setEditing] = useState(false);
 	const [newTweet, setNewTweet] = useState(tweet.tweet);
 
+	// Deleting Tweet
 	const onDeleteClick = async () => {
 		const ok = window.confirm(
 			"Are you sure you want to delete this tweet?"
@@ -17,8 +18,10 @@ const Tweet = ({ tweet, isOwner }) => {
 		}
 	};
 
+	//Toggle the mode whether to edit existing tweet or not
 	const toggleEditing = () => setEditing((prev) => !prev);
 
+	//Submit an update to an existing tweet
 	const onSubmit = async (event) => {
 		event.preventDefault();
 
@@ -27,6 +30,7 @@ const Tweet = ({ tweet, isOwner }) => {
 		toggleEditing();
 	};
 
+	//keep updating the textbox value
 	const onChange = (event) => {
 		const {
 			target: { value },

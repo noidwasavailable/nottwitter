@@ -9,6 +9,7 @@ const Home = ({ userObj }) => {
 	const [tweets, setTweets] = useState([]);
 	const [attachment, setAttachment] = useState("");
 
+	//whenever the tweets are updated at Firebase, update the webpage
 	useEffect(() => {
 		dbService
 			.collection("tweets")
@@ -23,6 +24,7 @@ const Home = ({ userObj }) => {
 			});
 	}, []);
 
+	// Submit a new tweet
 	const onSubmit = async (event) => {
 		event.preventDefault();
 
@@ -51,6 +53,7 @@ const Home = ({ userObj }) => {
 		setAttachment("");
 	};
 
+	//keep changing the textbox value as you type on
 	const onChange = (event) => {
 		const {
 			target: { value },
@@ -59,6 +62,7 @@ const Home = ({ userObj }) => {
 		setNewTweet(value);
 	};
 
+	//read the attached file using FileReader
 	const onFileChange = (event) => {
 		const {
 			target: { files },
