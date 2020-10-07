@@ -4,16 +4,13 @@ import { authService } from "fbase";
 
 function App() {
 	const [init, setInit] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [userObj, setUserObj] = useState(null);
 
 	useEffect(() => {
 		authService.onAuthStateChanged((user) => {
 			if (user) {
-				setIsLoggedIn(true);
 				setUserObj(user);
 			} else {
-				setIsLoggedIn(false);
 				setUserObj(null);
 			}
 			setInit(true);
@@ -23,11 +20,11 @@ function App() {
 	return (
 		<>
 			{init ? (
-				<TwitRouter isLoggedIn={isLoggedIn} userObj={userObj} />
+				<TwitRouter isLoggedIn={Boolean(userObj)} userObj={userObj} />
 			) : (
 				<span>Loading...</span>
 			)}
-			<footer>NotTwitter {new Date().getFullYear()}</footer>
+			{/* <footer>NotTwitter {new Date().getFullYear()}</footer> */}
 		</>
 	);
 }

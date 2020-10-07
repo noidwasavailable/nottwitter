@@ -1,10 +1,13 @@
 import Tweet from "components/Tweet";
-import { dbService } from "fbase";
+import { v4 as uuidv4 } from "uuid";
+
+import { dbService, storageService } from "fbase";
 import React, { useEffect, useState } from "react";
 
 const Home = ({ userObj }) => {
 	const [newTweet, setNewTweet] = useState("");
 	const [tweets, setTweets] = useState([]);
+	const [attachment, setAttachment] = useState(null);
 
 	useEffect(() => {
 		dbService.collection("tweets").onSnapshot((snapshot) => {
@@ -20,11 +23,20 @@ const Home = ({ userObj }) => {
 
 	const onSubmit = async (event) => {
 		event.preventDefault();
-		await dbService.collection("tweets").add({
-			tweet: newTweet,
-			createdAt: Date.now(),
-			author: userObj.uid,
-		});
+
+		const fileRef = storageService
+			.ref()
+			.child(`${userObj.uid}/${uuidv4()}`);
+		if (attachment) {
+			const result = await fileRef.putString(attachment, "data_url");
+			console.log(result);
+		}
+
+		// await dbService.collection("tweets").add({
+		// 	tweet: newTweet,
+		// 	createdAt: Date.now(),
+		// 	author: userObj.uid,
+		// });
 
 		setNewTweet("");
 	};
@@ -35,6 +47,30 @@ const Home = ({ userObj }) => {
 		} = event;
 
 		setNewTweet(value);
+	};
+
+	const onFileChange = (event) => {
+		const {
+			target: { files },
+		} = event;
+
+		const file = files[0];
+		const reader = new FileReader();
+
+		//event listener for reading the file
+		reader.onloadend = (finishedEvent) => {
+			const {
+				currentTarget: { result },
+			} = finishedEvent;
+			setAttachment(result);
+		};
+
+		//read the file
+		reader.readAsDataURL(file);
+	};
+
+	const onClearAttachment = () => {
+		setAttachment(null);
 	};
 
 	return (
@@ -48,7 +84,20 @@ const Home = ({ userObj }) => {
 					placeholder="What's on your mind?"
 					maxLength={140}
 				/>
+				<input type="file" accept="image/*" onChange={onFileChange} />
 				<input type="submit" value="NotTweet"></input>
+				{attachment && (
+					<div>
+						<img
+							src={attachment}
+							width="100px"
+							height="100px"
+							object-fit="cover"
+							alt="Attachment Selected"
+						/>
+						<button onClick={onClearAttachment}>Clear</button>
+					</div>
+				)}
 			</form>
 			<div>
 				{tweets.map((tweet) => (
