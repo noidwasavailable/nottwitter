@@ -27,30 +27,31 @@ const Home = ({ userObj }) => {
 	// Submit a new tweet
 	const onSubmit = async (event) => {
 		event.preventDefault();
+		if (newTweet) {
+			let attachmentURL = "";
 
-		let attachmentURL = "";
+			if (attachment) {
+				const attachmentRef = storageService
+					.ref()
+					.child(`${userObj.uid}/${uuidv4()}`);
 
-		if (attachment) {
-			const attachmentRef = storageService
-				.ref()
-				.child(`${userObj.uid}/${uuidv4()}`);
+				const result = await attachmentRef.putString(
+					attachment,
+					"data_url"
+				);
+				attachmentURL = await result.ref.getDownloadURL();
+			}
+			const tweet = {
+				tweet: newTweet,
+				createdAt: Date.now(),
+				author: userObj.uid,
+				attachmentURL,
+			};
 
-			const result = await attachmentRef.putString(
-				attachment,
-				"data_url"
-			);
-			attachmentURL = await result.ref.getDownloadURL();
+			await dbService.collection("tweets").add(tweet);
+			setNewTweet("");
+			setAttachment("");
 		}
-		const tweet = {
-			tweet: newTweet,
-			createdAt: Date.now(),
-			author: userObj.uid,
-			attachmentURL,
-		};
-
-		await dbService.collection("tweets").add(tweet);
-		setNewTweet("");
-		setAttachment("");
 	};
 
 	//keep changing the textbox value as you type on

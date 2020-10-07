@@ -1,4 +1,9 @@
-import { authService, firebaseInstance } from "fbase";
+import {
+	authService,
+	dbService,
+	firebaseInstance,
+	storageService,
+} from "fbase";
 import React, { useState } from "react";
 
 const Auth = () => {
@@ -31,6 +36,16 @@ const Auth = () => {
 					email,
 					password
 				);
+
+				const user = {
+					displayName: "",
+					uid: data.user.uid,
+					email,
+					profilePicture: "",
+					bio: "",
+				};
+
+				createNewUser(user);
 			} else {
 				//sign in with an existing account
 				data = await authService.signInWithEmailAndPassword(
@@ -38,10 +53,23 @@ const Auth = () => {
 					password
 				);
 			}
-			console.log(data);
 		} catch (error) {
 			setErrorMessage(error.message);
 		}
+	};
+
+	//checks if the user has a profile pic. If not, choose the default profile pic and create user in the DB.
+	const createNewUser = async (user) => {
+		if (!user.profilePicture) {
+			const photoRef = storageService
+				.ref()
+				.child(`public/default_profile_pic.png`);
+			user.profilePicture = await photoRef.getDownloadURL();
+		}
+
+		await dbService.collection("users").add(user);
+
+		console.log("Hey! A new user!");
 	};
 
 	///////////////////////////////HELPER FUNCTIONS////////////////////////////////////
@@ -61,7 +89,19 @@ const Auth = () => {
 			provider = new firebaseInstance.auth.GithubAuthProvider();
 		}
 
-		await authService.signInWithPopup(provider);
+		const socialResponse = await authService.signInWithPopup(provider);
+
+		if (socialResponse.additionalUserInfo.isNewUser) {
+			const user = {
+				displayName: socialResponse.user.displayName,
+				uid: socialResponse.user.uid,
+				email: socialResponse.user.email,
+				profilePicture: socialResponse.user.photoURL,
+				bio: "",
+			};
+
+			createNewUser(user);
+		}
 	};
 
 	/////////////////////////////////////////STYLES///////////////////////////////////
